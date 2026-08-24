@@ -1,0 +1,16 @@
+---
+description: Commit and push to GitHub after every completed code change
+alwaysApply: true
+---
+
+# Auto commit and push
+
+After finishing a code change in this repo, do not wait for the user to say 上传 git.
+
+1. Run `git status`, `git diff`, and `git log` to draft a 1-2 sentence commit message focused on why.
+2. Stage only the relevant files. Never stage `server/.env`, `.env`, credentials, or secrets.
+3. Commit with a HEREDOC message. Do not amend unless the user asks and the amend rules are met.
+4. Push to the current branch tracking remote (`git push origin HEAD`). Do not force-push, skip hooks, or change git config.
+5. Reply with the commit SHA and that it was pushed.
+
+Skip the commit only when there is nothing to commit, or the only remaining files are secrets.
