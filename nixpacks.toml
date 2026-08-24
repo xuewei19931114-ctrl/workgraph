@@ -1,9 +1,5 @@
 [variables]
 NIXPACKS_NODE_VERSION = "22"
-NPM_CONFIG_PRODUCTION = "false"
 
 [phases.setup]
-aptPkgs = ["python3", "build-essential"]
-
-[phases.install]
-cmds = ["npm ci --include=dev"]
+aptPkgs = ["python3"]
