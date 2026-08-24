@@ -1,0 +1,13 @@
+node_modules
+dist
+server/dist
+shared/dist
+server/data
+.env
+.env.*
+!server/.env.example
+.git
+.vercel
+*.db
+*.db-shm
+*.db-wal
