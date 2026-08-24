@@ -39,6 +39,15 @@ export function formatGptRequestLog(input: {
   )
 }
 
+function endpointParts(endpoint: string): { host: string; path: string } {
+  try {
+    const parsed = new URL(endpoint)
+    return { host: parsed.host, path: parsed.pathname }
+  } catch {
+    return { host: endpoint, path: '/' }
+  }
+}
+
 export function formatGptResponseLog(input: {
   stage: string
   jobId?: string
@@ -54,13 +63,14 @@ export function formatGptResponseLog(input: {
   secrets?: readonly string[]
 }): string {
   const secrets = input.secrets ?? []
+  const parts = endpointParts(input.endpoint)
   const lines = [
-    `[gpt] response stage=${input.stage} job=${input.jobId ?? 'none'} state=${input.state} wallMs=${input.wallMs}`,
+    `[gpt] response stage=${input.stage} job=${input.jobId ?? 'none'} state=${input.state} wallMs=${input.wallMs} url=${input.endpoint} host=${parts.host} path=${parts.path}`,
     `[gpt] endpoint=${input.endpoint}`,
     `[gpt] responseId=${input.responseId ?? 'none'} inputTokens=${input.inputTokens ?? 'none'} outputTokens=${input.outputTokens ?? 'none'} reasoningTokens=${input.reasoningTokens ?? 'none'}`,
   ]
   if (input.error) {
-    lines.push(`[gpt] error=${input.error}`)
+    lines.push(`[gpt] error=${input.error} url=${input.endpoint}`)
   }
   if (input.outputText !== undefined) {
     lines.push('[gpt] outputPreview=', previewText(input.outputText))

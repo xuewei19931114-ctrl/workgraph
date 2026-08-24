@@ -40,9 +40,12 @@ describe('provider console logs', () => {
       error: 'The provider rejected the request.',
     })
 
-    expect(log).toContain('[gpt] response stage=core')
-    expect(log).toContain('endpoint=http://proxy.example/openai/v1/responses')
-    expect(log).toContain('error=The provider rejected the request.')
+    const firstLine = log.split('\n')[0] ?? ''
+    expect(firstLine).toContain('[gpt] response stage=core')
+    expect(firstLine).toContain('url=http://proxy.example/openai/v1/responses')
+    expect(firstLine).toContain('host=proxy.example')
+    expect(firstLine).toContain('path=/openai/v1/responses')
+    expect(log).toContain('error=The provider rejected the request. url=http://proxy.example/openai/v1/responses')
   })
 
   it('prints response ids, usage, and output preview', () => {

@@ -9,7 +9,7 @@ import { createJobManager } from './jobs/job-manager.js'
 import { startTranscriptRetentionSweep } from './jobs/transcript-retention.js'
 import { loadOptionalEnvFiles } from './load-env.js'
 import { createRepositoryCallRecorder } from './provider/call-recorder.js'
-import { createResponsesClient } from './provider/responses-client.js'
+import { createResponsesClient, endpointFor } from './provider/responses-client.js'
 
 function keepAliveOnVercel(promise: Promise<void>) {
   if (process.env.VERCEL !== '1') return
@@ -32,6 +32,7 @@ export async function createRuntime() {
   const log = (message: string) => {
     console.log(message)
   }
+  log(`[gpt] endpoint=${endpointFor(config.baseUrl)}`)
   const provider = createResponsesClient({
     config,
     recorder: createRepositoryCallRecorder(repository),

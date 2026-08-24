@@ -97,7 +97,7 @@ function safeError(code: ProviderErrorCode): SafeProviderError {
   return { code, message: SAFE_ERRORS[code] }
 }
 
-function endpointFor(baseUrl: string): string {
+export function endpointFor(baseUrl: string): string {
   const url = new URL(baseUrl)
   const normalizedPath = url.pathname
     .replace(/\/+/g, '/')
