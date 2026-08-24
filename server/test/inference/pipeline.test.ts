@@ -240,7 +240,7 @@ describe('runProfileInference', () => {
   it('uses exactly one Core call on the direct default path', async () => {
     const model = conservativeModel()
     const fake = new FakeProvider((request) => {
-      expect(request.instructions).toContain('reviewer-brain-core-v1.1.0')
+      expect(request.instructions).toContain('reviewer-brain-core-v1.2.0')
       return completed(model)
     })
     const repository = new FakeRepository()
@@ -275,7 +275,7 @@ describe('runProfileInference', () => {
     expect(lines.some((line) => line.includes('extractor skipped'))).toBe(true)
     expect(
       lines.some((line) =>
-        line.includes('prompt=reviewer-brain-core-v1.1.0'),
+        line.includes('prompt=reviewer-brain-core-v1.2.0'),
       ),
     ).toBe(true)
     expect(lines.some((line) => line.includes('critic skipped'))).toBe(true)

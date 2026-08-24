@@ -4,15 +4,57 @@ import { fileURLToPath } from 'node:url'
 
 import { describe, expect, it } from 'vitest'
 
-import { buildCoreInferencePrompt } from '../../src/prompts/core-inference.js'
+import {
+  DEFAULT_CORE_INFERENCE_PROMPT_VERSION,
+  buildCoreInferencePrompt,
+  resolveCoreInferencePromptVersion,
+} from '../../src/prompts/core-inference.js'
 import { buildCriticPrompt } from '../../src/prompts/critic.js'
 import { buildEvidenceExtractorPrompt } from '../../src/prompts/evidence-extractor.js'
 
 describe('runtime reviewer prompts', () => {
+  it('keeps reviewer-brain-core-v1.1.0 as a selectable prompt', () => {
+    const prompt = buildCoreInferencePrompt(
+      undefined,
+      'reviewer-brain-core-v1.1.0',
+    )
+
+    expect(prompt).toContain('Optimization target: DISCRIMINATIVE POWER.')
+    expect(prompt).toContain(
+      'Follow this public, implementation-oriented reasoning sequence:',
+    )
+    expect(prompt).not.toContain('I. EPISTEMIC HIERARCHY')
+  })
+
+  it('adds reviewer-brain-core-v1.2.0 as the default core prompt', () => {
+    expect(DEFAULT_CORE_INFERENCE_PROMPT_VERSION).toBe(
+      'reviewer-brain-core-v1.2.0',
+    )
+    expect(resolveCoreInferencePromptVersion({})).toBe(
+      'reviewer-brain-core-v1.2.0',
+    )
+    expect(
+      resolveCoreInferencePromptVersion({
+        CORE_INFERENCE_PROMPT_VERSION: 'reviewer-brain-core-v1.1.0',
+      }),
+    ).toBe('reviewer-brain-core-v1.1.0')
+
+    const prompt = buildCoreInferencePrompt()
+
+    expect(prompt).toContain('I. EPISTEMIC HIERARCHY')
+    expect(prompt).toContain('STAGE 1 — Evidence Mining')
+    expect(prompt).toContain('VI. ANTI-HALLUCINATION RULES')
+    expect(prompt).toContain('XI. HARD INVARIANTS')
+    expect(prompt).toContain('XII. FINAL QUALITY TEST')
+    expect(prompt).toContain(
+      'Could the candidate simply be unusually good at prompting AI',
+    )
+  })
+
   it('requires essay-density Chinese report fields inside the JSON', () => {
     const prompt = buildCoreInferencePrompt()
 
-    expect(prompt).toContain('Narrative density')
+    expect(prompt).toMatch(/Narrative density/i)
     expect(prompt).toContain('# Working Archetype')
     expect(prompt).toContain('# Highest-Signal Episodes')
     expect(prompt).toContain('# Competing Archetypes')

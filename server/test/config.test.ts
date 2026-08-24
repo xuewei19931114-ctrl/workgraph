@@ -52,6 +52,27 @@ describe('loadConfig', () => {
     expect(loaded.contextTokenLimit).toBe(400000)
   })
 
+  it('defaults the Core prompt to reviewer-brain-core-v1.2.0 and allows v1.1.0', () => {
+    expect(loadConfig({ GPT56_API_KEY: 'test-key-not-real' }).corePromptVersion).toBe(
+      'reviewer-brain-core-v1.2.0',
+    )
+    expect(
+      loadConfig({
+        GPT56_API_KEY: 'test-key-not-real',
+        CORE_INFERENCE_PROMPT_VERSION: 'reviewer-brain-core-v1.1.0',
+      }).corePromptVersion,
+    ).toBe('reviewer-brain-core-v1.1.0')
+  })
+
+  it('rejects an unknown Core prompt version', () => {
+    expect(() =>
+      loadConfig({
+        GPT56_API_KEY: 'test-key-not-real',
+        CORE_INFERENCE_PROMPT_VERSION: 'reviewer-brain-core-v9.9.9',
+      }),
+    ).toThrow(/CORE_INFERENCE_PROMPT_VERSION/)
+  })
+
   it('points SQLite at /tmp on Vercel when no db path is set', () => {
     const env: NodeJS.ProcessEnv = { VERCEL: '1' }
     applyVercelDefaults(env)

@@ -7,8 +7,8 @@ import {
   type Transcript,
 } from '../../../shared/profile-schemas.js'
 import {
-  CORE_INFERENCE_PROMPT_VERSION,
   buildCoreInferencePrompt,
+  resolveCoreInferencePromptVersion,
 } from '../prompts/core-inference.js'
 import type { ResponsesClient } from '../provider/responses-client.js'
 import {
@@ -32,7 +32,7 @@ export async function runCoreInference(
     {
       stage: 'core',
       jobId: input.jobId,
-      instructions: `${buildCoreInferencePrompt()}\n\nPrompt version: ${CORE_INFERENCE_PROMPT_VERSION}`,
+      instructions: `${buildCoreInferencePrompt()}\n\nPrompt version: ${resolveCoreInferencePromptVersion()}`,
       input: JSON.stringify(inferenceInput),
       schemaName: 'candidate_model',
       jsonSchema: z.toJSONSchema(CandidateModelSchema) as Record<

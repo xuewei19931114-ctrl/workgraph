@@ -7,7 +7,7 @@ import {
 } from '../../../shared/profile-schemas.js'
 import type { UiCandidateModel } from '../../../shared/ui-model.js'
 import type { JobStatus } from '../db/repository.js'
-import { CORE_INFERENCE_PROMPT_VERSION } from '../prompts/core-inference.js'
+import { resolveCoreInferencePromptVersion } from '../prompts/core-inference.js'
 import { CRITIC_PROMPT_VERSION } from '../prompts/critic.js'
 import { EVIDENCE_EXTRACTOR_PROMPT_VERSION } from '../prompts/evidence-extractor.js'
 import type { ResponsesClient } from '../provider/responses-client.js'
@@ -327,7 +327,7 @@ export async function runProfileInference(
     }
 
     stage(
-      `core start prompt=${CORE_INFERENCE_PROMPT_VERSION} input=${'transcript' in coreInput ? 'full_transcript' : 'merged_episodes'} steps=17`,
+      `core start prompt=${resolveCoreInferencePromptVersion()} input=${'transcript' in coreInput ? 'full_transcript' : 'merged_episodes'} steps=17`,
     )
     let canonicalModel = await runCoreInference(coreInput, {
       jobId: input.jobId,

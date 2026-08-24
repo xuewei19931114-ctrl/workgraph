@@ -1,5 +1,11 @@
 import { z } from 'zod'
 
+import {
+  CORE_INFERENCE_PROMPT_VERSIONS,
+  DEFAULT_CORE_INFERENCE_PROMPT_VERSION,
+  type CoreInferencePromptVersion,
+} from './prompts/core-inference.js'
+
 export interface ServerConfig {
   host: string
   port: number
@@ -12,6 +18,7 @@ export interface ServerConfig {
   contextTokenLimit: number
   extractorConcurrency: number
   enableCritic: boolean
+  corePromptVersion: CoreInferencePromptVersion
   dbPath: string
   transcriptRetentionDays: number
   bodyLimit?: number
@@ -40,6 +47,9 @@ const envSchema = z.object({
     .enum(['true', 'false'])
     .transform((value) => value === 'true')
     .default(false),
+  CORE_INFERENCE_PROMPT_VERSION: z
+    .enum(CORE_INFERENCE_PROMPT_VERSIONS)
+    .default(DEFAULT_CORE_INFERENCE_PROMPT_VERSION),
   WORKGRAPH_DB_PATH: z.string().min(1).default('server/data/workgraph.db'),
   TRANSCRIPT_RETENTION_DAYS: positiveInteger.default(7),
   PROFILE_MAX_BODY_BYTES: positiveInteger.default(10 * 1024 * 1024),
@@ -101,6 +111,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
     contextTokenLimit: result.data.PROFILE_CONTEXT_TOKEN_LIMIT,
     extractorConcurrency: result.data.PROFILE_EXTRACTOR_CONCURRENCY,
     enableCritic: result.data.PROFILE_ENABLE_CRITIC,
+    corePromptVersion: result.data.CORE_INFERENCE_PROMPT_VERSION,
     dbPath: result.data.WORKGRAPH_DB_PATH,
     transcriptRetentionDays: result.data.TRANSCRIPT_RETENTION_DAYS,
     bodyLimit: result.data.PROFILE_MAX_BODY_BYTES,
