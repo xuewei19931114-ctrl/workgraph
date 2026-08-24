@@ -1894,13 +1894,17 @@ button {
 
 .dimension header {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
 }
 
 .dimension b {
+  flex: 1 1 12rem;
+  min-width: 0;
   font-size: 12px;
+  overflow-wrap: anywhere;
 }
 
 .dimension p {
@@ -1911,10 +1915,14 @@ button {
 }
 
 .chip {
-  flex-shrink: 0;
+  flex: 0 1 auto;
+  max-width: 100%;
   padding: 5px 8px;
   font-size: 8px;
   font-style: normal;
+  line-height: 1.45;
+  white-space: normal;
+  overflow-wrap: anywhere;
   border-radius: 999px;
 }
 
@@ -1982,13 +1990,17 @@ button {
 
 .capability header {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
 }
 
 .capability b {
+  flex: 1 1 12rem;
+  min-width: 0;
   font-size: 12px;
+  overflow-wrap: anywhere;
 }
 
 .capability > p {
@@ -2015,6 +2027,7 @@ button {
   font-size: 10px;
   line-height: 1.6;
   color: #5f6672;
+  overflow-wrap: anywhere;
   border-left: 2px solid #dfe4ef;
 }
 
@@ -2037,6 +2050,7 @@ button {
   font-size: 11px;
   line-height: 1.75;
   color: #3e4450;
+  overflow-wrap: anywhere;
 }
 
 .report-prose p:last-child {
@@ -2080,8 +2094,9 @@ button {
 .episode-block header,
 .competitor-card header {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 8px;
 }
@@ -2089,7 +2104,21 @@ button {
 .episode-block b,
 .competitor-card b,
 .strength-risk b {
+  flex: 1 1 12rem;
+  min-width: 0;
   font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.episode-standard {
+  margin: 0 0 10px;
+  padding: 8px 10px;
+  font-size: 10px;
+  line-height: 1.55;
+  color: #5468a5;
+  background: #edf2ff;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
 }
 
 .episode-block blockquote {
@@ -2098,6 +2127,7 @@ button {
   font-size: 10px;
   line-height: 1.6;
   color: #5f6672;
+  overflow-wrap: anywhere;
   border-left: 2px solid #dfe4ef;
 }
 
@@ -2186,13 +2216,17 @@ button {
 
 .role-row header {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
 }
 
 .role-row b {
+  flex: 1 1 12rem;
+  min-width: 0;
   font-size: 12px;
+  overflow-wrap: anywhere;
 }
 
 .role-row p {
@@ -2400,6 +2434,32 @@ button {
 }
 
 @media (max-width: 480px) {
+  .overlay {
+    padding: 0;
+    align-items: end;
+  }
+
+  .modal-card,
+  .modal-card.wide {
+    width: 100%;
+    max-height: 92vh;
+    padding: 22px 16px 28px;
+    border-radius: 22px 22px 0 0;
+  }
+
+  .report-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .report-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .confidence-split span,
+  .chip {
+    border-radius: 10px;
+  }
+
   .brand-head {
     padding: 21px 18px 10px;
   }

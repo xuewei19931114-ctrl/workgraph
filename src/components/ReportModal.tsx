@@ -86,8 +86,10 @@ function ReviewerEssay({
             <article className="episode-block" key={`${episode.source}-${episode.title}`}>
               <header>
                 <b>{episode.title}</b>
-                <i className="chip repeated">{episode.protectedStandard}</i>
               </header>
+              {episode.protectedStandard ? (
+                <p className="episode-standard">{episode.protectedStandard}</p>
+              ) : null}
               <Prose text={episode.narrative} />
               {episode.quote ? (
                 <blockquote>
