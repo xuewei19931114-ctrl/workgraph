@@ -47,6 +47,11 @@ describe('loadConfig', () => {
     expect(loaded.transcriptRetentionDays).toBe(7)
   })
 
+  it('defaults the Core prompt budget to 400000 tokens', () => {
+    const loaded = loadConfig({ GPT56_API_KEY: 'test-key-not-real' })
+    expect(loaded.contextTokenLimit).toBe(400000)
+  })
+
   it('points SQLite at /tmp on Vercel when no db path is set', () => {
     const env: NodeJS.ProcessEnv = { VERCEL: '1' }
     applyVercelDefaults(env)
