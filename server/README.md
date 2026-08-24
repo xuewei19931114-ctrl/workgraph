@@ -51,7 +51,7 @@ npm run build
 npm start
 ```
 
-不要用 `npm run dev`。平台会注入 `PORT`；Railway 上即使变量里写了 `HOST=127.0.0.1`，进程也会改绑 `0.0.0.0`。SQLite 默认写到 `/tmp/workgraph.db`。必须在平台 Variables 里填写 `GPT56_API_KEY` 和 `GPT56_BASE_URL`（代理 origin，不要带 `/openai/v1/responses`）。健康检查路径是 `/api/health`。`better-sqlite3` 需要 Python 和 C++ 工具链才能编译，Railway 用仓库里的 Dockerfile 安装这些依赖。
+不要用 `npm run dev`。平台会注入 `PORT`；Railway 上即使变量里写了 `HOST=127.0.0.1`，进程也会改绑 `0.0.0.0`。SQLite 默认写到 `/tmp/workgraph.db`。必须在平台 Variables 里填写 `GPT56_API_KEY` 和 `GPT56_BASE_URL`（代理 origin，不要带 `/openai/v1/responses`）。健康检查路径是 `/api/health`。`better-sqlite3` 需要 Python 才能编译，Nixpacks 会在构建阶段安装 `python3` 和 `build-essential`。
 
 开发时 Vite 把 `/api` 代理到 Fastify。健康检查：
 

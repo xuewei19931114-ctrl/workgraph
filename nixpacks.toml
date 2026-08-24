@@ -1,10 +1,9 @@
 [variables]
 NIXPACKS_NODE_VERSION = "22"
-PYTHON = "python3"
 NPM_CONFIG_PRODUCTION = "false"
 
 [phases.setup]
-nixPkgs = ["...", "python3", "gcc", "gnumake"]
+aptPkgs = ["python3", "build-essential"]
 
 [phases.install]
 cmds = ["npm ci --include=dev"]
