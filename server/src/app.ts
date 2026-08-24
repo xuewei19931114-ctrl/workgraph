@@ -7,7 +7,9 @@ import Fastify, { type FastifyInstance } from 'fastify'
 
 import { loadConfig, type ServerConfig } from './config.js'
 import type { ProfileRepository } from './db/repository.js'
+import type { AgentChatInput } from './inference/agent-runner.js'
 import type { JobManager } from './jobs/job-manager.js'
+import { registerAgentRoutes } from './routes/agent.js'
 import { registerProfileRoutes } from './routes/profile.js'
 
 export interface AppDependencies {
@@ -15,6 +17,9 @@ export interface AppDependencies {
   repository?: ProfileRepository
   jobManager?: JobManager
   staticDir?: string
+  agent?: {
+    reply: (input: AgentChatInput) => Promise<{ reply: string }>
+  }
 }
 
 function shouldServeBuiltFrontend(env: NodeJS.ProcessEnv = process.env): boolean {
@@ -77,6 +82,9 @@ export async function buildApp(
       jobManager: deps.jobManager,
       transcriptRetentionDays: config.transcriptRetentionDays,
     })
+  }
+  if (deps.agent !== undefined) {
+    await registerAgentRoutes(app, deps.agent)
   }
 
   const staticDir = resolveStaticDir(deps.staticDir)

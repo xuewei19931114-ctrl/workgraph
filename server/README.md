@@ -84,6 +84,14 @@ curl -s -X DELETE 'http://127.0.0.1:8787/api/profile/models?candidateId=candidat
 
 `DELETE /api/profile/jobs/:jobId` 会把 AbortSignal 传到当前 provider 调用以及并行 extraction sibling。重复取消幂等。`DELETE /api/profile/models` 只删画像，保留 transcript、导入记录和聊天历史。
 
+对话智能体：
+
+```bash
+curl -s -X POST http://127.0.0.1:8787/api/agent/chat \
+  -H 'content-type: application/json' \
+  -d '{"messages":[{"role":"user","content":"我适合什么工作？"}],"profile":null}'
+```
+
 ## 存储与保留
 
 - Transcript 默认保留 `TRANSCRIPT_RETENTION_DAYS`（7）天后过期删除。服务启动时会清扫一次，之后每天再清扫；只记录删除条数，不记录正文。

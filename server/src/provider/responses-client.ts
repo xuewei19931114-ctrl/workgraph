@@ -207,6 +207,13 @@ function explicitlyRejectsSchema(body: Record<string, unknown> | null): boolean 
   )
 }
 
+function outputTokenBudget<T>(
+  config: ServerConfig,
+  request: Pick<StructuredCall<T>, 'maxOutputTokens'>,
+): number {
+  return request.maxOutputTokens ?? config.maxOutputTokens
+}
+
 function schemaPayload<T>(
   config: ServerConfig,
   request: StructuredCall<T>,
@@ -214,7 +221,7 @@ function schemaPayload<T>(
   return {
     model: config.model,
     reasoning: { effort: config.reasoningEffort },
-    max_output_tokens: config.maxOutputTokens,
+    max_output_tokens: outputTokenBudget(config, request),
     instructions: request.instructions,
     input: request.input,
     text: {
@@ -235,7 +242,7 @@ function fallbackPayload<T>(
   return {
     model: config.model,
     reasoning: { effort: config.reasoningEffort },
-    max_output_tokens: config.maxOutputTokens,
+    max_output_tokens: outputTokenBudget(config, request),
     instructions: `${request.instructions}\nReturn only strict JSON matching the requested schema.`,
     input: request.input,
     text: { format: { type: 'json_object' } },
@@ -251,7 +258,7 @@ function repairPayload<T>(
   return {
     model: config.model,
     reasoning: { effort: config.reasoningEffort },
-    max_output_tokens: config.maxOutputTokens,
+    max_output_tokens: outputTokenBudget(config, request),
     instructions:
       'Repair the supplied JSON. Return only JSON matching the target schema.',
     input: invalidJson,

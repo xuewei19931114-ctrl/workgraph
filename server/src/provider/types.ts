@@ -1,4 +1,4 @@
-export type ProviderStage = 'extractor' | 'core' | 'critic' | 'json_repair'
+export type ProviderStage = 'extractor' | 'core' | 'critic' | 'agent' | 'json_repair'
 
 export type ProviderState =
   | 'completed'
@@ -15,6 +15,7 @@ export interface StructuredCall<T> {
   schemaName: string
   jsonSchema: Record<string, unknown>
   parse: (value: unknown) => T
+  maxOutputTokens?: number
 }
 
 export interface ProviderUsage {

@@ -55,11 +55,11 @@ npm run dev
 
 ## 关于 mock 与真实后端
 
-画像生成已接入 Fastify 任务 API。以下仍为 mock，替换它们不会影响画像链路：
+画像生成和对话智能体都接入 Fastify + GPT-5.6。以下仍为 mock：
 
 - `src/data/jobs.ts` — 每日推荐岗位
-- `src/lib/agent.ts` — 职业智能体回复
 - 登录 / 认证状态
+- 网址导入
 
 ## 目录结构
 

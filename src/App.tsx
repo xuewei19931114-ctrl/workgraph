@@ -23,7 +23,8 @@ import {
   getProfileModel,
   pollProfileJob,
 } from './lib/profileApi'
-import { draftReply, titleFromMessage } from './lib/agent'
+import { requestAgentChat } from './lib/agentApi'
+import { titleFromMessage } from './lib/agent'
 import { buildCareerProfile } from './data/model'
 import { load, remove, save } from './lib/storage'
 import type {
@@ -358,15 +359,16 @@ export default function App() {
   const sendMessage = useCallback(
     (text: string) => {
       const userMessage = { id: `u-${Date.now()}`, role: 'user' as const, text }
-      let targetId = activeConversationId
+      const existing = conversations.find((item) => item.id === activeConversationId)
+      const targetId = existing?.id ?? `c-${Date.now()}`
+      const history = [...(existing?.messages ?? []), userMessage]
 
       setConversations((current) => {
-        if (targetId && current.some((item) => item.id === targetId)) {
+        if (current.some((item) => item.id === targetId)) {
           return current.map((item) =>
             item.id === targetId ? { ...item, messages: [...item.messages, userMessage] } : item,
           )
         }
-        targetId = `c-${Date.now()}`
         return [
           {
             id: targetId,
@@ -380,24 +382,68 @@ export default function App() {
       setActiveConversationId(targetId)
       setThinking(true)
 
-      window.setTimeout(() => {
-        setConversations((current) =>
-          current.map((item) => {
-            if (item.id !== targetId) return item
-            const turn = item.messages.filter((message) => message.role === 'agent').length
-            const reply = {
-              id: `a-${Date.now()}`,
-              role: 'agent' as const,
-              text: draftReply(text, { model, conversations: totals.conversations, turn }),
-              animate: true,
-            }
-            return { ...item, messages: [...item.messages, reply] }
-          }),
-        )
-        setThinking(false)
-      }, 900)
+      void (async () => {
+        try {
+          const { reply } = await requestAgentChat({
+            messages: history.map((message) => ({
+              role: message.role,
+              content: message.text,
+            })),
+            profile: model
+              ? {
+                  headline: model.headline,
+                  sourceLabel: model.sourceLabel,
+                  thesis: model.thesis,
+                }
+              : null,
+          })
+          setConversations((current) =>
+            current.map((item) =>
+              item.id === targetId
+                ? {
+                    ...item,
+                    messages: [
+                      ...item.messages,
+                      {
+                        id: `a-${Date.now()}`,
+                        role: 'agent' as const,
+                        text: reply,
+                        animate: true,
+                      },
+                    ],
+                  }
+                : item,
+            ),
+          )
+        } catch (error) {
+          const message =
+            error instanceof ProfileApiError
+              ? error.message
+              : '智能体暂时无法回复，请稍后重试。'
+          setConversations((current) =>
+            current.map((item) =>
+              item.id === targetId
+                ? {
+                    ...item,
+                    messages: [
+                      ...item.messages,
+                      {
+                        id: `a-${Date.now()}`,
+                        role: 'agent' as const,
+                        text: message,
+                        animate: true,
+                      },
+                    ],
+                  }
+                : item,
+            ),
+          )
+        } finally {
+          setThinking(false)
+        }
+      })()
     },
-    [activeConversationId, model, totals.conversations],
+    [activeConversationId, conversations, model],
   )
 
   // 打字机动画播完后清掉标记，避免切换标签页时整段文字重播。

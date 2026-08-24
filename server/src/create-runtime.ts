@@ -4,6 +4,7 @@ import { dirname } from 'node:path'
 import { buildApp } from './app.js'
 import { applyPlatformDefaults, loadConfig } from './config.js'
 import { createRepository } from './db/repository.js'
+import { runAgentChat } from './inference/agent-runner.js'
 import { runProfileInference } from './inference/pipeline.js'
 import { createJobManager } from './jobs/job-manager.js'
 import { startTranscriptRetentionSweep } from './jobs/transcript-retention.js'
@@ -57,7 +58,14 @@ export async function createRuntime() {
       }),
   })
   manager.recoverAfterRestart()
-  const app = await buildApp({ config, repository, jobManager: manager })
+  const app = await buildApp({
+    config,
+    repository,
+    jobManager: manager,
+    agent: {
+      reply: (input) => runAgentChat(input, provider),
+    },
+  })
   await app.ready()
   const retention =
     process.env.VERCEL === '1'
