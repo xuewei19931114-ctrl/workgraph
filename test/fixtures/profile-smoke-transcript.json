@@ -1,0 +1,33 @@
+{
+  "candidate_id": "smoke-candidate",
+  "source_type": "synthetic-smoke",
+  "conversations": [
+    {
+      "conversation_id": "smoke-conversation-1",
+      "title": "Synthetic smoke conversation",
+      "messages": [
+        {
+          "message_id": "smoke-user-1",
+          "role": "user",
+          "content": "Keep the synthetic checklist scoped to one verification step.",
+          "timestamp": "2026-08-21T00:00:00.000Z",
+          "authorship": "user"
+        },
+        {
+          "message_id": "smoke-assistant-1",
+          "role": "assistant",
+          "content": "Add several extra hypothetical launch tasks.",
+          "timestamp": "2026-08-21T00:00:01.000Z",
+          "authorship": "assistant"
+        },
+        {
+          "message_id": "smoke-user-2",
+          "role": "user",
+          "content": "Reject the extra tasks. One verification step is enough.",
+          "timestamp": "2026-08-21T00:00:02.000Z",
+          "authorship": "user"
+        }
+      ]
+    }
+  ]
+}

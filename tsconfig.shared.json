@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "composite": true,
+    "rootDir": "shared",
+    "outDir": "shared/dist",
+    "tsBuildInfoFile": "shared/dist/tsconfig.shared.tsbuildinfo"
+  },
+  "include": ["shared/**/*.ts"]
+}

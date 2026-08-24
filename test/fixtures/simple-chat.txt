@@ -1,0 +1,3 @@
+User: Propose a synthetic test case.
+
+Assistant: Verify deterministic identifiers across repeated parses.

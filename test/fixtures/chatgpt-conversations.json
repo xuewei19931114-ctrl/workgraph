@@ -1,0 +1,65 @@
+[
+  {
+    "title": "Synthetic planning chat",
+    "create_time": 1700000000,
+    "current_node": "assistant-2",
+    "mapping": {
+      "root": {
+        "id": "root",
+        "parent": null,
+        "children": ["user-1"],
+        "message": null
+      },
+      "user-1": {
+        "id": "user-1",
+        "parent": "root",
+        "children": ["assistant-1"],
+        "message": {
+          "author": { "role": "user" },
+          "create_time": 1700000001,
+          "content": { "content_type": "text", "parts": ["Draft a synthetic release checklist."] }
+        }
+      },
+      "assistant-1": {
+        "id": "assistant-1",
+        "parent": "user-1",
+        "children": ["user-2", "inactive-user"],
+        "message": {
+          "author": { "role": "assistant" },
+          "create_time": 1700000002,
+          "content": { "content_type": "text", "parts": ["Start with scope and verification."] }
+        }
+      },
+      "inactive-user": {
+        "id": "inactive-user",
+        "parent": "assistant-1",
+        "children": [],
+        "message": {
+          "author": { "role": "user" },
+          "create_time": 1700000003,
+          "content": { "content_type": "text", "parts": ["This branch must not be selected."] }
+        }
+      },
+      "user-2": {
+        "id": "user-2",
+        "parent": "assistant-1",
+        "children": ["assistant-2"],
+        "message": {
+          "author": { "role": "user" },
+          "create_time": 1700000004,
+          "content": { "content_type": "text", "parts": ["Add rollback steps."] }
+        }
+      },
+      "assistant-2": {
+        "id": "assistant-2",
+        "parent": "user-2",
+        "children": [],
+        "message": {
+          "author": { "role": "assistant" },
+          "create_time": 1700000005,
+          "content": { "content_type": "text", "parts": ["Include owner, trigger, and recovery check."] }
+        }
+      }
+    }
+  }
+]
