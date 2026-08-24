@@ -14,6 +14,8 @@ npm run dev
 
 打开 http://localhost:5173 。Vite 会把 `/api` 代理到 Fastify（默认 `127.0.0.1:8787`）。
 
+公网部署用 `npm start`（不要用 `npm run dev`）。Railway 会注入 `PORT`，进程监听 `0.0.0.0`，并同时提供前端静态页和 `/api`。必须在平台里填写 `GPT56_API_KEY` 和 `GPT56_BASE_URL`，不要把密钥写进仓库。
+
 后端说明、环境变量、取消语义和隐私边界见 [server/README.md](server/README.md)。
 
 其他命令：
@@ -21,6 +23,7 @@ npm run dev
 | 命令 | 说明 |
 | --- | --- |
 | `npm run build` | 类型检查并打包到 `dist/` |
+| `npm start` | 生产启动：同一端口提供前端和 `/api` |
 | `npm run preview` | 本地预览打包产物 |
 | `npm run lint` | 运行 ESLint |
 | `npm test` | 运行 Vitest（不调用真实模型） |

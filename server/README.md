@@ -44,6 +44,15 @@ npm run dev                          # Vite :5173 + Fastify :8787
 npm run dev:server
 ```
 
+生产启动（Railway 等平台）：
+
+```bash
+npm run build
+npm start
+```
+
+不要用 `npm run dev`。平台会注入 `PORT`；Railway 上即使变量里写了 `HOST=127.0.0.1`，进程也会改绑 `0.0.0.0`。SQLite 默认写到 `/tmp/workgraph.db`。必须在平台 Variables 里填写 `GPT56_API_KEY` 和 `GPT56_BASE_URL`（代理 origin，不要带 `/openai/v1/responses`）。健康检查路径是 `/api/health`。
+
 开发时 Vite 把 `/api` 代理到 Fastify。健康检查：
 
 ```bash

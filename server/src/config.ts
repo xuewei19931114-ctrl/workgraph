@@ -54,6 +54,31 @@ export function applyVercelDefaults(
   }
 }
 
+function isRailway(env: NodeJS.ProcessEnv): boolean {
+  return (
+    env.RAILWAY_ENVIRONMENT !== undefined ||
+    env.RAILWAY_PROJECT_ID !== undefined
+  )
+}
+
+export function applyPlatformDefaults(
+  env: NodeJS.ProcessEnv = process.env,
+): void {
+  applyVercelDefaults(env)
+  if (!isRailway(env)) return
+  if (
+    env.HOST === undefined ||
+    env.HOST === '' ||
+    env.HOST === '127.0.0.1' ||
+    env.HOST === 'localhost'
+  ) {
+    env.HOST = '0.0.0.0'
+  }
+  if (env.WORKGRAPH_DB_PATH === undefined || env.WORKGRAPH_DB_PATH === '') {
+    env.WORKGRAPH_DB_PATH = '/tmp/workgraph.db'
+  }
+}
+
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
   const result = envSchema.safeParse(env)
 

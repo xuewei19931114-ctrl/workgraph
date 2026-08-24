@@ -2,7 +2,7 @@ import { mkdirSync } from 'node:fs'
 import { dirname } from 'node:path'
 
 import { buildApp } from './app.js'
-import { applyVercelDefaults, loadConfig } from './config.js'
+import { applyPlatformDefaults, loadConfig } from './config.js'
 import { createRepository } from './db/repository.js'
 import { runProfileInference } from './inference/pipeline.js'
 import { createJobManager } from './jobs/job-manager.js'
@@ -23,7 +23,7 @@ function keepAliveOnVercel(promise: Promise<void>) {
 
 export async function createRuntime() {
   loadOptionalEnvFiles()
-  applyVercelDefaults()
+  applyPlatformDefaults()
   const config = loadConfig()
   if (config.dbPath !== ':memory:') {
     mkdirSync(dirname(config.dbPath), { recursive: true })

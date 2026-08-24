@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
-import { applyVercelDefaults, loadConfig } from '../src/config.js'
+import {
+  applyPlatformDefaults,
+  applyVercelDefaults,
+  loadConfig,
+} from '../src/config.js'
 
 const validEnv: NodeJS.ProcessEnv = {
   GPT56_API_KEY: 'test-key-not-real',
@@ -47,6 +51,26 @@ describe('loadConfig', () => {
     const env: NodeJS.ProcessEnv = { VERCEL: '1' }
     applyVercelDefaults(env)
     expect(env.WORKGRAPH_DB_PATH).toBe('/tmp/workgraph.db')
+  })
+
+  it('binds 0.0.0.0 and uses /tmp SQLite on Railway', () => {
+    const env: NodeJS.ProcessEnv = {
+      RAILWAY_ENVIRONMENT: 'production',
+      HOST: '127.0.0.1',
+    }
+    applyPlatformDefaults(env)
+    expect(env.HOST).toBe('0.0.0.0')
+    expect(env.WORKGRAPH_DB_PATH).toBe('/tmp/workgraph.db')
+  })
+
+  it('keeps an explicit Railway SQLite path', () => {
+    const env: NodeJS.ProcessEnv = {
+      RAILWAY_PROJECT_ID: 'proj_123',
+      WORKGRAPH_DB_PATH: '/data/workgraph.db',
+    }
+    applyPlatformDefaults(env)
+    expect(env.HOST).toBe('0.0.0.0')
+    expect(env.WORKGRAPH_DB_PATH).toBe('/data/workgraph.db')
   })
 
   it('defaults a long core timeout and a high output-token budget', () => {

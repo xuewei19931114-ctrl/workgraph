@@ -1,4 +1,8 @@
+import { existsSync } from 'node:fs'
+import { resolve } from 'node:path'
+
 import cors from '@fastify/cors'
+import fastifyStatic from '@fastify/static'
 import Fastify, { type FastifyInstance } from 'fastify'
 
 import { loadConfig, type ServerConfig } from './config.js'
@@ -10,6 +14,27 @@ export interface AppDependencies {
   config?: ServerConfig
   repository?: ProfileRepository
   jobManager?: JobManager
+  staticDir?: string
+}
+
+function shouldServeBuiltFrontend(env: NodeJS.ProcessEnv = process.env): boolean {
+  return (
+    env.NODE_ENV === 'production' ||
+    env.RAILWAY_ENVIRONMENT !== undefined ||
+    env.RAILWAY_PROJECT_ID !== undefined ||
+    env.SERVE_FRONTEND === '1'
+  )
+}
+
+function resolveStaticDir(
+  explicit?: string,
+  env: NodeJS.ProcessEnv = process.env,
+): string | undefined {
+  if (explicit !== undefined && explicit !== '') return explicit
+  if (!shouldServeBuiltFrontend(env)) return undefined
+  const distDir = resolve(process.cwd(), 'dist')
+  if (existsSync(resolve(distDir, 'index.html'))) return distDir
+  return undefined
 }
 
 export async function buildApp(
@@ -19,15 +44,6 @@ export async function buildApp(
   const app = Fastify({ bodyLimit: config.bodyLimit ?? 10 * 1024 * 1024 })
 
   await app.register(cors)
-
-  app.get('/api/health', async () => ({ ok: true }))
-  if (deps.repository !== undefined && deps.jobManager !== undefined) {
-    await registerProfileRoutes(app, {
-      repository: deps.repository,
-      jobManager: deps.jobManager,
-      transcriptRetentionDays: config.transcriptRetentionDays,
-    })
-  }
 
   app.setErrorHandler((caught, _request, reply) => {
     const metadata =
@@ -53,6 +69,34 @@ export async function buildApp(
       },
     })
   })
+
+  app.get('/api/health', async () => ({ ok: true }))
+  if (deps.repository !== undefined && deps.jobManager !== undefined) {
+    await registerProfileRoutes(app, {
+      repository: deps.repository,
+      jobManager: deps.jobManager,
+      transcriptRetentionDays: config.transcriptRetentionDays,
+    })
+  }
+
+  const staticDir = resolveStaticDir(deps.staticDir)
+  if (staticDir !== undefined) {
+    await app.register(fastifyStatic, {
+      root: staticDir,
+      wildcard: false,
+    })
+    app.setNotFoundHandler((request, reply) => {
+      if (request.method === 'GET' && !request.url.startsWith('/api')) {
+        return reply.sendFile('index.html')
+      }
+      return reply.code(404).send({
+        error: {
+          code: 'NOT_FOUND',
+          message: 'Not found.',
+        },
+      })
+    })
+  }
 
   return app
 }
