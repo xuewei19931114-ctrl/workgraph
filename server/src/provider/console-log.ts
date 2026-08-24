@@ -42,6 +42,7 @@ export function formatGptRequestLog(input: {
 export function formatGptResponseLog(input: {
   stage: string
   jobId?: string
+  endpoint: string
   state: string
   responseId: string | null
   wallMs: number
@@ -55,6 +56,7 @@ export function formatGptResponseLog(input: {
   const secrets = input.secrets ?? []
   const lines = [
     `[gpt] response stage=${input.stage} job=${input.jobId ?? 'none'} state=${input.state} wallMs=${input.wallMs}`,
+    `[gpt] endpoint=${input.endpoint}`,
     `[gpt] responseId=${input.responseId ?? 'none'} inputTokens=${input.inputTokens ?? 'none'} outputTokens=${input.outputTokens ?? 'none'} reasoningTokens=${input.reasoningTokens ?? 'none'}`,
   ]
   if (input.error) {

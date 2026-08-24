@@ -530,6 +530,7 @@ export function createResponsesClient(
         formatGptResponseLog({
           stage: request.stage,
           jobId: request.jobId,
+          endpoint,
           state,
           responseId: raw.providerResponseId,
           wallMs: Math.max(0, raw.endedAt.getTime() - raw.startedAt.getTime()),

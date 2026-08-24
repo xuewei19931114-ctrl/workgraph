@@ -26,10 +26,30 @@ describe('provider console logs', () => {
     expect(log).not.toContain('SECRET_KEY_VALUE')
   })
 
+  it('prints the GPT URL on failed responses', () => {
+    const log = formatGptResponseLog({
+      stage: 'core',
+      jobId: 'job-1',
+      endpoint: 'http://proxy.example/openai/v1/responses',
+      state: 'failed',
+      responseId: null,
+      wallMs: 375,
+      inputTokens: null,
+      outputTokens: null,
+      reasoningTokens: null,
+      error: 'The provider rejected the request.',
+    })
+
+    expect(log).toContain('[gpt] response stage=core')
+    expect(log).toContain('endpoint=http://proxy.example/openai/v1/responses')
+    expect(log).toContain('error=The provider rejected the request.')
+  })
+
   it('prints response ids, usage, and output preview', () => {
     const log = formatGptResponseLog({
       stage: 'core',
       jobId: 'job-1',
+      endpoint: 'http://proxy.example/openai/v1/responses',
       state: 'completed',
       responseId: 'resp-1',
       wallMs: 1200,
@@ -40,6 +60,7 @@ describe('provider console logs', () => {
     })
 
     expect(log).toContain('state=completed')
+    expect(log).toContain('endpoint=http://proxy.example/openai/v1/responses')
     expect(log).toContain('responseId=resp-1')
     expect(log).toContain('inputTokens=99')
     expect(log).toContain('{"name":"Ada"}')
